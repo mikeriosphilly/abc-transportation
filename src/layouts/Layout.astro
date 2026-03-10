@@ -12,7 +12,24 @@ const canonicalURL = Astro.url.href;
     <meta name="description" content="ABC Transportation - Professional transportation services with comprehensive driver clearances, real-time GPS tracking, and wheelchair-accessible vehicles." />
     <title>{title}</title>
     <link rel="canonical" href={canonicalURL} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content="ABC Transportation - Professional transportation services with comprehensive driver clearances, real-time GPS tracking, and wheelchair-accessible vehicles." />
+    <meta property="og:image" content="https://www.abctransportation.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="ABC Transportation" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content="ABC Transportation - Professional transportation services with comprehensive driver clearances, real-time GPS tracking, and wheelchair-accessible vehicles." />
+    <meta name="twitter:image" content="https://www.abctransportation.com/og-image.jpg" />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "TaxiService",
