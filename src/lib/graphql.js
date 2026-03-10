@@ -1,8 +1,6 @@
 import { GraphQLClient, gql } from "graphql-request";
 
-const client = new GraphQLClient(
-  "https://wordpress-321502-6259672.cloudwaysapps.com/graphql",
-);
+const client = new GraphQLClient(import.meta.env.GRAPHQL_URL);
 
 export const GET_HOMEPAGE_TABS = gql`
   query GetHomepageTabs {
