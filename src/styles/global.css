@@ -277,8 +277,8 @@ html {
     @apply font-euclid text-sm font-normal text-white leading-[1.5] m-0;
   }
   .ht-feature-title {
-    @apply font-baskerville font-normal leading-[1.1] text-white mb-5;
-    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    @apply font-euclid font-light leading-[1.1] text-white mb-5;
+    font-size: 3.75rem;
   }
   .ht-feature-body {
     @apply font-euclid text-[0.9375rem] font-normal leading-[1.5] text-abc-body mb-8;
