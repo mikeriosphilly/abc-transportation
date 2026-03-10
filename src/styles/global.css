@@ -1,6 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* =============================================================================
+   ABC Transportation — Global Styles
+   See STYLES.md in the project root for full documentation.
+   ============================================================================= */
+
+@import "tailwindcss";
+
+/* -----------------------------------------------------------------------------
+   Design Tokens
+   Custom colors and fonts registered with Tailwind via @theme.
+   Use these as utility classes anywhere: bg-abc-gold, text-abc-body,
+   font-euclid, font-baskerville, etc.
+   ----------------------------------------------------------------------------- */
+@theme {
+  --color-abc-black: #000000;
+  --color-abc-dark: #0a0a0a;
+  --color-abc-darker: #111111;
+  --color-abc-border: #424242;
+  --color-abc-subtext: #242424;
+  --color-abc-gold: #a7a86e;
+  --color-abc-body: #c6c6c6;
+  --color-abc-active: #1a1a1a;
+  --font-euclid: "EuclidCircularB", sans-serif;
+  --font-baskerville: "LibreBaskerville", serif;
+}
 
 @font-face {
   font-family: "EuclidCircularB";
@@ -54,4 +76,158 @@ html {
   font-family: "EuclidCircularB", sans-serif;
   background-color: #000000;
   color: #ffffff;
+}
+
+/* -----------------------------------------------------------------------------
+   Component Classes — HomepageTabs
+   Prefixed with `ht-` to scope styles to this component.
+   State modifiers use BEM-style suffixes: --active / --inactive / --open / --closed.
+   See STYLES.md for the full class reference.
+   ----------------------------------------------------------------------------- */
+@layer components {
+  /* ── Section ── */
+  .ht-section {
+    @apply bg-abc-black w-full p-0;
+  }
+
+  /* ── Tab Bar — Desktop ── */
+  .ht-tab-bar-desktop-wrap {
+    @apply flex justify-center px-5 pt-6;
+  }
+  .ht-tab-pill-group {
+    @apply flex flex-wrap justify-center bg-abc-dark border border-abc-border rounded-full p-1.5;
+  }
+  .ht-tab-btn {
+    @apply flex items-center gap-2 py-2.5 px-[22px] rounded-full border-0 cursor-pointer font-euclid text-xs font-normal tracking-[0.08em] uppercase transition-all duration-200 relative;
+  }
+  .ht-tab-btn--active   { @apply bg-abc-active text-abc-gold; }
+  .ht-tab-btn--inactive { @apply bg-transparent text-white; }
+  .ht-tab-icon {
+    @apply w-[18px] h-[18px] object-contain;
+  }
+  .ht-tab-indicator {
+    @apply absolute bottom-1 left-1/2 -translate-x-1/2 w-[30px] h-0.5 bg-abc-gold rounded-[1px];
+  }
+
+  /* ── Tab Bar — Mobile ── */
+  .ht-tab-bar-mobile-wrap {
+    @apply flex flex-wrap justify-center gap-2.5 px-5 pt-6;
+  }
+  .ht-mobile-tab-btn {
+    @apply flex items-center gap-2 py-2.5 px-5 rounded-full border border-abc-border cursor-pointer font-euclid text-xs font-normal tracking-[0.08em] uppercase transition-all duration-200;
+  }
+  .ht-mobile-tab-btn--active   { @apply bg-abc-active text-abc-gold; }
+  .ht-mobile-tab-btn--inactive { @apply bg-abc-dark text-white; }
+
+  /* ── Desktop Layout ── */
+  .ht-desktop-grid {
+    @apply grid grid-cols-2 gap-0 max-w-[1400px] mx-auto px-[60px] pt-[60px] pb-20;
+  }
+  .ht-left-col  { @apply pr-[60px]; }
+  .ht-right-col { @apply flex flex-col; }
+
+  /* Heading */
+  .ht-heading-block { @apply mb-8; }
+  .ht-heading-main {
+    @apply font-baskerville font-normal leading-none text-white uppercase m-0 tracking-normal;
+    font-size: clamp(3rem, 6vw, 5.625rem);
+  }
+  .ht-heading-sub {
+    @apply font-baskerville font-normal italic leading-[1.15] text-abc-gold m-0 tracking-normal;
+    font-size: clamp(2rem, 4vw, 3.75rem);
+  }
+
+  /* Left column body text */
+  .ht-body-text {
+    @apply font-euclid text-[0.9375rem] font-normal leading-[1.4] text-abc-body mb-10 max-w-[480px];
+  }
+
+  /* Subcategory list */
+  .ht-subcat-list { @apply flex flex-col; }
+  .ht-subcat-btn {
+    @apply flex items-center gap-4 py-4 px-5 border-0 border-b border-abc-subtext cursor-pointer text-left transition-colors duration-200 w-full;
+  }
+  .ht-subcat-btn--active   { @apply bg-abc-darker; }
+  .ht-subcat-btn--inactive { @apply bg-transparent; }
+  .ht-subcat-icon {
+    @apply w-7 h-7 object-contain shrink-0;
+  }
+  .ht-subcat-icon--active   { @apply opacity-100; }
+  .ht-subcat-icon--inactive { @apply opacity-60; }
+  .ht-subcat-label {
+    @apply font-euclid text-xs font-normal tracking-[0.1em] uppercase transition-colors duration-200;
+  }
+  .ht-subcat-label--active   { @apply text-abc-gold; }
+  .ht-subcat-label--inactive { @apply text-white; }
+
+  /* Right column */
+  .ht-feature-image {
+    @apply w-full h-[360px] object-cover block mb-8;
+  }
+  .ht-feature-title {
+    @apply font-baskerville font-normal leading-[1.1] text-white mb-5;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+  }
+  .ht-feature-body {
+    @apply font-euclid text-[0.9375rem] font-normal leading-[1.5] text-abc-body mb-8;
+  }
+
+  /* CTA buttons */
+  .ht-cta-group { @apply flex gap-4 flex-wrap; }
+  .ht-cta-gold {
+    @apply inline-block py-4 px-8 bg-abc-gold text-black font-euclid text-[0.9375rem] font-normal tracking-[0.08em] uppercase no-underline rounded-full transition-opacity duration-200;
+    &:hover { opacity: 0.85; }
+  }
+  .ht-cta-white {
+    @apply inline-block py-4 px-8 bg-white text-black font-euclid text-[0.9375rem] font-normal tracking-[0.08em] uppercase no-underline rounded-full transition-opacity duration-200;
+    &:hover { opacity: 0.85; }
+  }
+
+  /* ── Mobile Layout ── */
+  .ht-mobile-wrap { @apply pt-6 px-5 pb-[60px]; }
+  .ht-mobile-heading-block { @apply text-center mb-7; }
+  .ht-mobile-heading-main {
+    @apply font-baskerville font-normal leading-none text-white uppercase m-0;
+    font-size: clamp(2.5rem, 10vw, 4rem);
+  }
+  .ht-mobile-heading-sub {
+    @apply font-baskerville font-normal italic leading-[1.15] text-abc-gold m-0;
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+  }
+  .ht-mobile-body-text {
+    @apply font-euclid text-[0.9375rem] text-abc-body leading-[1.5] mt-4 text-center;
+  }
+
+  /* Accordions */
+  .ht-accordion-item { @apply border-b border-abc-subtext; }
+  .ht-accordion-item--open   { @apply bg-abc-darker px-4; }
+  .ht-accordion-item--closed { @apply bg-transparent p-0; }
+  .ht-accordion-btn {
+    @apply flex items-center gap-3 py-4 px-0 bg-transparent border-0 cursor-pointer w-full text-left;
+  }
+  .ht-accordion-icon { @apply w-6 h-6 object-contain; }
+  .ht-accordion-icon--open   { @apply opacity-100; }
+  .ht-accordion-icon--closed { @apply opacity-70; }
+  .ht-accordion-label {
+    @apply font-euclid text-xs tracking-[0.1em] uppercase font-normal flex-1;
+  }
+  .ht-accordion-label--open   { @apply text-abc-gold; }
+  .ht-accordion-label--closed { @apply text-white; }
+  .ht-accordion-content { @apply pb-6; }
+  .ht-accordion-image {
+    @apply w-full h-[240px] object-cover block mb-5;
+  }
+  .ht-accordion-title {
+    @apply font-baskerville font-normal text-[1.75rem] text-white mb-3;
+  }
+  .ht-accordion-body {
+    @apply font-euclid text-[0.9375rem] text-abc-body leading-[1.5] mb-6;
+  }
+  .ht-accordion-cta-group { @apply flex gap-3 flex-wrap; }
+  .ht-cta-gold-sm {
+    @apply py-3.5 px-7 bg-abc-gold text-black font-euclid text-sm tracking-[0.08em] uppercase no-underline rounded-full;
+  }
+  .ht-cta-white-sm {
+    @apply py-3.5 px-7 bg-white text-black font-euclid text-sm tracking-[0.08em] uppercase no-underline rounded-full;
+  }
 }
