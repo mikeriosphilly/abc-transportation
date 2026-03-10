@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 const { title = 'ABC Transportation' } = Astro.props;
+const canonicalURL = Astro.url.href;
 ---
 
 <!DOCTYPE html>
@@ -10,10 +11,61 @@ const { title = 'ABC Transportation' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="ABC Transportation - Professional transportation services with comprehensive driver clearances, real-time GPS tracking, and wheelchair-accessible vehicles." />
     <title>{title}</title>
+    <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "TaxiService",
+      "name": "ABC Transportation",
+      "url": "https://www.abctransportation.com",
+      "logo": "https://www.abctransportation.com/images/logo.png",
+      "image": "https://www.abctransportation.com/images/fleet.jpg",
+      "description": "ABC Transportation provides professional, reliable transportation services including executive car service, airport transfers, group charters, and wheelchair-accessible vehicles.",
+      "telephone": "+1-800-222-4227",
+      "email": "reservations@abctransportation.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "1200 Commerce Drive",
+        "addressLocality": "Chicago",
+        "addressRegion": "IL",
+        "postalCode": "60601",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 41.8827,
+        "longitude": -87.6233
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "priceRange": "$$$",
+      "currenciesAccepted": "USD",
+      "paymentAccepted": "Cash, Credit Card",
+      "areaServed": {
+        "@type": "City",
+        "name": "Chicago"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Transportation Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Executive Car Service" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Airport Transfers" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Group Charters" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Wheelchair-Accessible Transportation" } }
+        ]
+      },
+      "sameAs": [
+        "https://www.facebook.com/abctransportation",
+        "https://www.linkedin.com/company/abctransportation"
+      ]
+    })} />
   </head>
   <body>
     <slot />
   </body>
 </html>
-

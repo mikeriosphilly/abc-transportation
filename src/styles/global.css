@@ -84,7 +84,49 @@ html {
    State modifiers use BEM-style suffixes: --active / --inactive / --open / --closed.
    See STYLES.md for the full class reference.
    ----------------------------------------------------------------------------- */
+@keyframes ht-fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ht-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ht-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer components {
+  /* ── Animations ── */
+  .ht-animate-in {
+    animation: ht-fade 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .ht-heading-enter {
+    animation: ht-slide-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ht-content-fade {
+    animation: ht-fade 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
   /* ── Section ── */
   .ht-section {
     @apply bg-abc-black w-full p-0;
@@ -96,12 +138,30 @@ html {
   }
   .ht-tab-pill-group {
     @apply flex flex-wrap justify-center bg-abc-dark border border-abc-border rounded-full p-1.5;
+    position: relative;
+  }
+  .ht-tab-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--color-abc-active);
+    border-radius: 9999px;
+    pointer-events: none;
+    transition:
+      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .ht-tab-btn {
-    @apply flex items-center gap-2 py-2.5 px-[22px] rounded-full border-0 cursor-pointer font-euclid text-xs font-normal tracking-[0.08em] uppercase transition-all duration-200 relative;
+    @apply flex items-center gap-2 py-2.5 px-[22px] rounded-full border-0 cursor-pointer font-euclid text-xs font-normal tracking-[0.08em] uppercase transition-colors duration-200 relative;
+    z-index: 1;
   }
-  .ht-tab-btn--active   { @apply bg-abc-active text-abc-gold; }
-  .ht-tab-btn--inactive { @apply bg-transparent text-white; }
+  .ht-tab-btn--active {
+    @apply text-abc-gold;
+  }
+  .ht-tab-btn--inactive {
+    @apply text-white;
+  }
   .ht-tab-icon {
     @apply w-[18px] h-[18px] object-contain;
   }
@@ -111,28 +171,43 @@ html {
 
   /* ── Tab Bar — Mobile ── */
   .ht-tab-bar-mobile-wrap {
-    @apply flex flex-wrap justify-center gap-2.5 px-5 pt-6;
+    @apply flex flex-wrap justify-center gap-2.5 px-5 mt-7 mb-8;
   }
   .ht-mobile-tab-btn {
     @apply flex items-center gap-2 py-2.5 px-5 rounded-full border border-abc-border cursor-pointer font-euclid text-xs font-normal tracking-[0.08em] uppercase transition-all duration-200;
   }
-  .ht-mobile-tab-btn--active   { @apply bg-abc-active text-abc-gold; }
-  .ht-mobile-tab-btn--inactive { @apply bg-abc-dark text-white; }
+  .ht-mobile-tab-btn--active {
+    @apply bg-abc-active text-abc-gold;
+  }
+  .ht-mobile-tab-btn--inactive {
+    @apply bg-abc-dark text-white;
+  }
 
   /* ── Desktop Layout ── */
   .ht-desktop-grid {
-    @apply grid grid-cols-2 gap-0 max-w-[1400px] mx-auto px-[60px] pt-[60px] pb-20;
+    @apply grid grid-cols-2 gap-0 max-w-[1550px] mx-auto px-[60px] pt-[60px] pb-20;
   }
-  .ht-left-col  { @apply pr-[60px]; }
-  .ht-right-col { @apply flex flex-col; }
+  .ht-left-col {
+    @apply pr-[60px];
+  }
+  .ht-right-col {
+    @apply flex flex-col;
+  }
 
   /* Heading */
-  .ht-heading-block { @apply mb-8; }
-  .ht-heading-main {
+  .ht-heading-block {
+    @apply mb-8;
+  }
+  .ht-heading-block h1 {
+    margin-top: 0.1em;
+  }
+  .ht-heading-main,
+  p.ht-heading-main {
     @apply font-baskerville font-normal leading-none text-white uppercase m-0 tracking-normal;
     font-size: clamp(3rem, 6vw, 5.625rem);
   }
-  .ht-heading-sub {
+  .ht-heading-sub,
+  p.ht-heading-sub {
     @apply font-baskerville font-normal italic leading-[1.15] text-abc-gold m-0 tracking-normal;
     font-size: clamp(2rem, 4vw, 3.75rem);
   }
@@ -143,26 +218,63 @@ html {
   }
 
   /* Subcategory list */
-  .ht-subcat-list { @apply flex flex-col; }
+  .ht-subcat-list {
+    @apply flex flex-col;
+  }
   .ht-subcat-btn {
     @apply flex items-center gap-4 py-4 px-5 border-0 border-b border-abc-subtext cursor-pointer text-left transition-colors duration-200 w-full;
   }
-  .ht-subcat-btn--active   { @apply bg-abc-darker; }
-  .ht-subcat-btn--inactive { @apply bg-transparent; }
+  .ht-subcat-btn--active {
+    @apply bg-abc-darker;
+  }
+  .ht-subcat-btn--inactive {
+    @apply bg-transparent;
+  }
   .ht-subcat-icon {
     @apply w-7 h-7 object-contain shrink-0;
   }
-  .ht-subcat-icon--active   { @apply opacity-100; }
-  .ht-subcat-icon--inactive { @apply opacity-60; }
+  .ht-subcat-icon--active {
+    @apply opacity-100;
+  }
+  .ht-subcat-icon--inactive {
+    @apply opacity-60;
+  }
   .ht-subcat-label {
     @apply font-euclid text-xs font-normal tracking-[0.1em] uppercase transition-colors duration-200;
   }
-  .ht-subcat-label--active   { @apply text-abc-gold; }
-  .ht-subcat-label--inactive { @apply text-white; }
+  .ht-subcat-label--active {
+    @apply text-abc-gold;
+  }
+  .ht-subcat-label--inactive {
+    @apply text-white;
+  }
 
   /* Right column */
+  .ht-feature-image-wrap {
+    @apply relative overflow-hidden mb-8;
+  }
   .ht-feature-image {
-    @apply w-full h-[360px] object-cover block mb-8;
+    @apply w-full h-[360px] object-cover block;
+  }
+  .ht-feature-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem 1.25rem 1.25rem;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.82) 0%,
+      transparent 100%
+    );
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ht-feature-image-wrap:hover .ht-feature-caption {
+    transform: translateY(0);
+  }
+  .ht-feature-caption-text {
+    @apply font-euclid text-sm font-normal text-white leading-[1.5] m-0;
   }
   .ht-feature-title {
     @apply font-baskerville font-normal leading-[1.1] text-white mb-5;
@@ -172,25 +284,63 @@ html {
     @apply font-euclid text-[0.9375rem] font-normal leading-[1.5] text-abc-body mb-8;
   }
 
+  /* Subcategory panel stacking (all panels in DOM for SEO) */
+  .ht-subcat-panel-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+  .ht-subcat-panel {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ht-subcat-panel--active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .ht-subcat-panel--hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   /* CTA buttons */
-  .ht-cta-group { @apply flex gap-4 flex-wrap; }
+  .ht-cta-group {
+    @apply flex gap-4 flex-wrap;
+  }
   .ht-cta-gold {
     @apply inline-block py-4 px-8 bg-abc-gold text-black font-euclid text-[0.9375rem] font-normal tracking-[0.08em] uppercase no-underline rounded-full transition-opacity duration-200;
-    &:hover { opacity: 0.85; }
+    &:hover {
+      opacity: 0.85;
+    }
   }
   .ht-cta-white {
     @apply inline-block py-4 px-8 bg-white text-black font-euclid text-[0.9375rem] font-normal tracking-[0.08em] uppercase no-underline rounded-full transition-opacity duration-200;
-    &:hover { opacity: 0.85; }
+    &:hover {
+      opacity: 0.85;
+    }
   }
 
   /* ── Mobile Layout ── */
-  .ht-mobile-wrap { @apply pt-6 px-5 pb-[60px]; }
-  .ht-mobile-heading-block { @apply text-center mb-7; }
-  .ht-mobile-heading-main {
+  .ht-mobile-wrap {
+    @apply pt-6 px-5 pb-[60px];
+  }
+  .ht-mobile-heading-block {
+    @apply text-center mb-7;
+  }
+  .ht-mobile-heading-block h1 {
+    margin-top: 0.35em;
+  }
+  .ht-mobile-heading-main,
+  p.ht-mobile-heading-main {
     @apply font-baskerville font-normal leading-none text-white uppercase m-0;
     font-size: clamp(2.5rem, 10vw, 4rem);
   }
-  .ht-mobile-heading-sub {
+  .ht-mobile-heading-sub,
+  p.ht-mobile-heading-sub {
     @apply font-baskerville font-normal italic leading-[1.15] text-abc-gold m-0;
     font-size: clamp(1.5rem, 6vw, 2.5rem);
   }
@@ -199,21 +349,53 @@ html {
   }
 
   /* Accordions */
-  .ht-accordion-item { @apply border-b border-abc-subtext; }
-  .ht-accordion-item--open   { @apply bg-abc-darker px-4; }
-  .ht-accordion-item--closed { @apply bg-transparent p-0; }
-  .ht-accordion-btn {
-    @apply flex items-center gap-3 py-4 px-0 bg-transparent border-0 cursor-pointer w-full text-left;
+  .ht-accordion-item {
+    @apply border-b border-abc-subtext;
   }
-  .ht-accordion-icon { @apply w-6 h-6 object-contain; }
-  .ht-accordion-icon--open   { @apply opacity-100; }
-  .ht-accordion-icon--closed { @apply opacity-70; }
+  .ht-accordion-item--open {
+    @apply bg-abc-darker;
+  }
+  .ht-accordion-item--closed {
+    @apply bg-transparent p-0;
+  }
+  .ht-accordion-btn {
+    @apply flex items-center gap-3 py-4 px-5 bg-transparent border-0 cursor-pointer w-full text-left;
+  }
+  .ht-accordion-icon {
+    @apply w-6 h-6 object-contain;
+  }
+  .ht-accordion-icon--open {
+    @apply opacity-100;
+  }
+  .ht-accordion-icon--closed {
+    @apply opacity-70;
+  }
   .ht-accordion-label {
     @apply font-euclid text-xs tracking-[0.1em] uppercase font-normal flex-1;
   }
-  .ht-accordion-label--open   { @apply text-abc-gold; }
-  .ht-accordion-label--closed { @apply text-white; }
-  .ht-accordion-content { @apply pb-6; }
+  .ht-accordion-label--open {
+    @apply text-abc-gold;
+  }
+  .ht-accordion-label--closed {
+    @apply text-white;
+  }
+  .ht-accordion-body-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+  }
+  .ht-accordion-body-wrap--open {
+    grid-template-rows: 1fr;
+  }
+  .ht-accordion-body-inner {
+    overflow: hidden;
+  }
+  .ht-accordion-content {
+    @apply px-5 pt-4 pb-8;
+  }
+  .ht-accordion-body-wrap--open .ht-accordion-content {
+    animation: ht-fade 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+  }
   .ht-accordion-image {
     @apply w-full h-[240px] object-cover block mb-5;
   }
@@ -223,7 +405,9 @@ html {
   .ht-accordion-body {
     @apply font-euclid text-[0.9375rem] text-abc-body leading-[1.5] mb-6;
   }
-  .ht-accordion-cta-group { @apply flex gap-3 flex-wrap; }
+  .ht-accordion-cta-group {
+    @apply flex gap-3 flex-wrap;
+  }
   .ht-cta-gold-sm {
     @apply py-3.5 px-7 bg-abc-gold text-black font-euclid text-sm tracking-[0.08em] uppercase no-underline rounded-full;
   }

@@ -32,6 +32,7 @@ export const GET_HOMEPAGE_TABS = gql`
               node {
                 sourceUrl
                 altText
+                caption
               }
             }
           }

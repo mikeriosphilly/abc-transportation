@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
   const [activeTab, setActiveTab] = useState(0);
@@ -7,6 +7,29 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
 
   const currentTab = tabs?.[activeTab];
   const currentSubcategory = currentTab?.subcategories?.[activeSubcategory];
+
+  const pillContainerRef = useRef(null);
+  const tabRefs = useRef([]);
+  const [sliderStyle, setSliderStyle] = useState(null);
+
+  useEffect(() => {
+    const container = pillContainerRef.current;
+    const activeBtn = tabRefs.current[activeTab];
+    if (!container || !activeBtn) return;
+    const containerRect = container.getBoundingClientRect();
+    const btnRect = activeBtn.getBoundingClientRect();
+    setSliderStyle({
+      width: `${btnRect.width}px`,
+      height: `${btnRect.height}px`,
+      transform: `translate(${btnRect.left - containerRect.left}px, ${btnRect.top - containerRect.top}px)`,
+    });
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (currentTab?.tabLabel) {
+      document.title = `ABC Transportation | ${currentTab.tabLabel}`;
+    }
+  }, [activeTab]);
 
   const handleTabChange = (index) => {
     setActiveTab(index);
@@ -39,10 +62,12 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
     <section className="abc-component ht-section">
       {/* Tab Bar — Desktop */}
       <div className="tab-bar-desktop ht-tab-bar-desktop-wrap">
-        <div className="ht-tab-pill-group">
+        <div ref={pillContainerRef} className="ht-tab-pill-group">
+          {sliderStyle && <div className="ht-tab-slider" style={sliderStyle} aria-hidden="true" />}
           {tabs?.map((tab, index) => (
             <button
               key={index}
+              ref={(el) => (tabRefs.current[index] = el)}
               onClick={() => handleTabChange(index)}
               className={`ht-tab-btn ${activeTab === index ? "ht-tab-btn--active" : "ht-tab-btn--inactive"}`}
             >
@@ -66,45 +91,19 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
         </div>
       </div>
 
-      {/* Tab Bar — Mobile */}
-      <div className="tab-bar-mobile ht-tab-bar-mobile-wrap">
-        {tabs?.map((tab, index) => (
-          <button
-            key={index}
-            onClick={() => handleTabChange(index)}
-            className={`ht-mobile-tab-btn ${activeTab === index ? "ht-mobile-tab-btn--active" : "ht-mobile-tab-btn--inactive"}`}
-          >
-            {tab.tabIcon?.node?.sourceUrl && (
-              <img
-                src={tab.tabIcon.node.sourceUrl}
-                alt={tab.tabIcon.node.altText || ""}
-                className="ht-tab-icon"
-                style={{
-                  filter:
-                    activeTab === index
-                      ? "invert(72%) sepia(35%) saturate(400%) hue-rotate(18deg) brightness(115%)"
-                      : "none",
-                }}
-              />
-            )}
-            {tab.tabLabel}
-          </button>
-        ))}
-      </div>
-
       {/* Desktop Layout */}
       <div className="desktop-layout ht-desktop-grid">
         {/* Left Column */}
         <div className="ht-left-col">
           {/* Heading */}
           <div className="ht-heading-block">
-            <h1 className="ht-heading-main">{heading.top}</h1>
-            <h1 className="ht-heading-sub">{heading.middle}</h1>
-            <h1 className="ht-heading-main">{heading.bottom}</h1>
+            <p className="ht-heading-main">{heading.top}</p>
+            <p className="ht-heading-sub">{heading.middle}</p>
+            <h1 key={activeTab} className="ht-heading-main ht-heading-enter">{heading.bottom}</h1>
           </div>
 
           {/* Body Text */}
-          <p className="ht-body-text">{currentTab?.tabBodyText}</p>
+          <p key={activeTab} className="ht-body-text ht-content-fade">{currentTab?.tabBodyText}</p>
 
           {/* Subcategory List */}
           <div className="ht-subcat-list">
@@ -131,18 +130,38 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
 
         {/* Right Column */}
         <div className="ht-right-col">
-          {currentSubcategory?.image?.node?.sourceUrl && (
-            <img
-              src={currentSubcategory.image.node.sourceUrl}
-              alt={currentSubcategory.image.node.altText || ""}
-              className="ht-feature-image"
-            />
-          )}
-          <h2 className="ht-feature-title">{currentSubcategory?.title}</h2>
-          <p className="ht-feature-body">{currentSubcategory?.bodyText}</p>
-          <div className="ht-cta-group">
-            <a href={getAQuoteUrl} className="ht-cta-gold">Get a Quote</a>
-            <a href={bookOnlineUrl} className="ht-cta-white">Book Online</a>
+          <div className="ht-subcat-panel-container">
+            {currentTab?.subcategories?.map((sub, index) => {
+              const isActive = activeSubcategory === index;
+              return (
+                <div
+                  key={`panel-${activeTab}-${index}`}
+                  className={`ht-subcat-panel ${isActive ? "ht-subcat-panel--active" : "ht-subcat-panel--hidden"}`}
+                  aria-hidden={!isActive}
+                >
+                  {sub.image?.node?.sourceUrl && (
+                    <div className="ht-feature-image-wrap">
+                      <img
+                        src={sub.image.node.sourceUrl}
+                        alt={sub.image.node.altText || ""}
+                        className="ht-feature-image"
+                      />
+                      {sub.image.node.caption && (
+                        <div className="ht-feature-caption">
+                          <p className="ht-feature-caption-text" dangerouslySetInnerHTML={{ __html: sub.image.node.caption }} />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <h2 className="ht-feature-title">{sub.title}</h2>
+                  <p className="ht-feature-body">{sub.bodyText}</p>
+                  <div className="ht-cta-group">
+                    <a href={getAQuoteUrl} className="ht-cta-gold">Get a Quote</a>
+                    <a href={bookOnlineUrl} className="ht-cta-white">Book Online</a>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -150,11 +169,37 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
       {/* Mobile Layout */}
       <div className="mobile-layout ht-mobile-wrap">
         {/* Heading */}
-        <div className="ht-mobile-heading-block">
-          <h1 className="ht-mobile-heading-main">{heading.top}</h1>
-          <h1 className="ht-mobile-heading-sub">{heading.middle}</h1>
+        <div key={activeTab} className="ht-mobile-heading-block ht-animate-in">
+          <p className="ht-mobile-heading-main">{heading.top}</p>
+          <p className="ht-mobile-heading-sub">{heading.middle}</p>
           <h1 className="ht-mobile-heading-main">{heading.bottom}</h1>
           <p className="ht-mobile-body-text">{currentTab?.tabBodyText}</p>
+        </div>
+
+        {/* Tab Bar — Mobile */}
+        <div key={`pills-${activeTab}`} className="ht-tab-bar-mobile-wrap ht-animate-in">
+          {tabs?.map((tab, index) => (
+            <button
+              key={index}
+              onClick={() => handleTabChange(index)}
+              className={`ht-mobile-tab-btn ${activeTab === index ? "ht-mobile-tab-btn--active" : "ht-mobile-tab-btn--inactive"}`}
+            >
+              {tab.tabIcon?.node?.sourceUrl && (
+                <img
+                  src={tab.tabIcon.node.sourceUrl}
+                  alt={tab.tabIcon.node.altText || ""}
+                  className="ht-tab-icon"
+                  style={{
+                    filter:
+                      activeTab === index
+                        ? "invert(72%) sepia(35%) saturate(400%) hue-rotate(18deg) brightness(115%)"
+                        : "none",
+                  }}
+                />
+              )}
+              {tab.tabLabel}
+            </button>
+          ))}
         </div>
 
         {/* Accordions — all subcategories */}
@@ -182,23 +227,25 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
                 </span>
               </button>
 
-              {isOpen && (
-                <div className="ht-accordion-content">
-                  {sub.image?.node?.sourceUrl && (
-                    <img
-                      src={sub.image.node.sourceUrl}
-                      alt={sub.image.node.altText || ""}
-                      className="ht-accordion-image"
-                    />
-                  )}
-                  <h2 className="ht-accordion-title">{sub.title}</h2>
-                  <p className="ht-accordion-body">{sub.bodyText}</p>
-                  <div className="ht-accordion-cta-group">
-                    <a href={getAQuoteUrl} className="ht-cta-gold-sm">Get a Quote</a>
-                    <a href={bookOnlineUrl} className="ht-cta-white-sm">Book Online</a>
+              <div className={`ht-accordion-body-wrap ${isOpen ? "ht-accordion-body-wrap--open" : ""}`}>
+                <div className="ht-accordion-body-inner">
+                  <div className="ht-accordion-content">
+                    {sub.image?.node?.sourceUrl && (
+                      <img
+                        src={sub.image.node.sourceUrl}
+                        alt={sub.image.node.altText || ""}
+                        className="ht-accordion-image"
+                      />
+                    )}
+                    <h2 className="ht-accordion-title">{sub.title}</h2>
+                    <p className="ht-accordion-body">{sub.bodyText}</p>
+                    <div className="ht-accordion-cta-group">
+                      <a href={getAQuoteUrl} className="ht-cta-gold-sm">Get a Quote</a>
+                      <a href={bookOnlineUrl} className="ht-cta-white-sm">Book Online</a>
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
@@ -208,13 +255,11 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
         .desktop-layout { display: grid !important; }
         .mobile-layout { display: none !important; }
         .tab-bar-desktop { display: flex !important; }
-        .tab-bar-mobile { display: none !important; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1110px) {
           .desktop-layout { display: none !important; }
           .mobile-layout { display: block !important; }
           .tab-bar-desktop { display: none !important; }
-          .tab-bar-mobile { display: flex !important; }
         }
       `}</style>
     </section>
