@@ -39,7 +39,7 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl, headin
 
       {/* Desktop Layout */}
       <div className="desktop-layout grid grid-cols-2 gap-0 max-w-[1720px] mx-auto px-[60px] pt-[45px] pb-20">
-        <div className="py-[1.6625rem] px-[4.875rem]">
+        <div className="py-[1.6625rem] px-[4.875rem] [container-type:inline-size]">
           <SectionHeading
             headingLine1={headingLine1}
             headingLine2={headingLine2}

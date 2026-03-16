@@ -90,12 +90,12 @@ html {
 /* -----------------------------------------------------------------------------
    Desktop / Mobile Layout Toggle
    ----------------------------------------------------------------------------- */
-.desktop-layout { display: grid !important; }
-.mobile-layout { display: none !important; }
-.tab-bar-desktop { display: flex !important; }
+.desktop-layout { display: none !important; }
+.mobile-layout { display: block !important; }
+.tab-bar-desktop { display: none !important; }
 
-@media (max-width: 1110px) {
-  .desktop-layout { display: none !important; }
-  .mobile-layout { display: block !important; }
-  .tab-bar-desktop { display: none !important; }
+@media (min-width: 1110px) {
+  .desktop-layout { display: grid !important; }
+  .mobile-layout { display: none !important; }
+  .tab-bar-desktop { display: flex !important; }
 }
