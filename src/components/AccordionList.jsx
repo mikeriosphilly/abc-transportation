@@ -12,6 +12,7 @@ export default function AccordionList({ subcategories, openAccordion, onToggleAc
           >
             <button
               onClick={() => onToggleAccordion(index)}
+              aria-expanded={isOpen}
               className="flex items-center gap-3 py-[1.25rem] px-0 bg-transparent border-0 cursor-pointer w-full text-left"
             >
               {sub.icon?.node?.sourceUrl && (

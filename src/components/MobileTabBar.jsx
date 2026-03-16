@@ -1,4 +1,4 @@
-const ACTIVE_ICON_FILTER = "brightness(0) invert(70%) sepia(18%) saturate(666%) hue-rotate(22deg) brightness(91%) contrast(87%)";
+import { ACTIVE_ICON_FILTER } from "../lib/constants";
 
 export default function MobileTabBar({ tabs, activeTab, onTabChange }) {
   return (
@@ -10,6 +10,7 @@ export default function MobileTabBar({ tabs, activeTab, onTabChange }) {
         <button
           key={index}
           onClick={() => onTabChange(index)}
+          aria-selected={activeTab === index}
           className={`flex items-center justify-center gap-2 py-2.5 w-[9.920625rem] rounded-full border border-abc-border cursor-pointer font-euclid text-xs font-normal tracking-[0.08em] uppercase transition-all duration-200 ${activeTab === index ? "bg-abc-active text-abc-gold" : "bg-abc-dark text-white"}`}
         >
           {tab.tabIcon?.node?.sourceUrl && (

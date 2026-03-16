@@ -11,7 +11,7 @@ export default function SubcategoryList({ subcategories, activeSubcategory, onSu
             <img
               src={sub.icon.node.sourceUrl}
               alt={sub.icon.node.altText || ""}
-              className="w-[1.875rem] h-[1.875rem] object-contain shrink-0 opacity-100"
+              className="w-[1.875rem] h-[1.875rem] object-contain shrink-0"
             />
           )}
           <span className={`font-euclid text-[1rem] font-bold tracking-[0.07em] uppercase transition-colors duration-200 ${activeSubcategory === index ? "text-abc-gold" : "text-white"}`}>

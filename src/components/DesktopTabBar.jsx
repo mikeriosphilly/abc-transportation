@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
-const ACTIVE_ICON_FILTER = "brightness(0) invert(70%) sepia(18%) saturate(666%) hue-rotate(22deg) brightness(91%) contrast(87%)";
+import { ACTIVE_ICON_FILTER } from "../lib/constants";
 
 export default function DesktopTabBar({ tabs, activeTab, onTabChange }) {
   const pillContainerRef = useRef(null);
@@ -43,6 +42,7 @@ export default function DesktopTabBar({ tabs, activeTab, onTabChange }) {
             key={index}
             ref={(el) => (tabRefs.current[index] = el)}
             onClick={() => onTabChange(index)}
+            aria-selected={activeTab === index}
             className={`relative z-[1] flex items-center gap-2 py-2.5 px-[22px] rounded-full border-0 cursor-pointer font-euclid text-[0.9375rem] leading-[1.3125rem] font-normal tracking-[0.05em] uppercase transition-colors duration-200 ${activeTab === index ? "text-abc-gold" : "text-white"}`}
           >
             {tab.tabIcon?.node?.sourceUrl && (

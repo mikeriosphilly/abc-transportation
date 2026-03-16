@@ -43,6 +43,11 @@ export const GET_HOMEPAGE_TABS = gql`
 `;
 
 export async function getHomepageData() {
-  const data = await client.request(GET_HOMEPAGE_TABS);
-  return data.homepageOptions.homepageTabsComponent;
+  try {
+    const data = await client.request(GET_HOMEPAGE_TABS);
+    return data.homepageOptions.homepageTabsComponent;
+  } catch (error) {
+    console.error("Failed to fetch homepage data:", error);
+    throw error;
+  }
 }
