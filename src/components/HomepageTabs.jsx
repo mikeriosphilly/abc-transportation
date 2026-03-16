@@ -1,28 +1,37 @@
 import { useState, useRef, useEffect } from "react";
 
-export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
+export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl, headingLine1, headingLine2, headingLine3, introBodyText }) {
   const [activeTab, setActiveTab] = useState(0);
   const [activeSubcategory, setActiveSubcategory] = useState(0);
   const [openAccordion, setOpenAccordion] = useState(0);
 
   const currentTab = tabs?.[activeTab];
-  const currentSubcategory = currentTab?.subcategories?.[activeSubcategory];
 
   const pillContainerRef = useRef(null);
   const tabRefs = useRef([]);
-  const [sliderStyle, setSliderStyle] = useState(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({});
+  const indicatorInitialized = useRef(false);
 
   useEffect(() => {
-    const container = pillContainerRef.current;
-    const activeBtn = tabRefs.current[activeTab];
-    if (!container || !activeBtn) return;
-    const containerRect = container.getBoundingClientRect();
-    const btnRect = activeBtn.getBoundingClientRect();
-    setSliderStyle({
-      width: `${btnRect.width}px`,
-      height: `${btnRect.height}px`,
-      transform: `translate(${btnRect.left - containerRect.left}px, ${btnRect.top - containerRect.top}px)`,
-    });
+    const calculate = (animate) => {
+      const container = pillContainerRef.current;
+      const activeBtn = tabRefs.current[activeTab];
+      if (!container || !activeBtn) return;
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = activeBtn.getBoundingClientRect();
+      const left = btnRect.left - containerRect.left + btnRect.width / 2 - 130.5 / 2;
+      setIndicatorStyle({
+        left: `${left}px`,
+        transition: animate ? 'left 0.4s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+      });
+    };
+
+    calculate(indicatorInitialized.current);
+    indicatorInitialized.current = true;
+
+    const handleResize = () => calculate(false);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [activeTab]);
 
   useEffect(() => {
@@ -45,25 +54,12 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
     setOpenAccordion(openAccordion === index ? null : index);
   };
 
-  const headingWords = {
-    Experience: {
-      top: "THE ABC",
-      middle: "Transportation",
-      bottom: "EXPERIENCE",
-    },
-    "We Care": { top: "THE ABC", middle: "Transportation", bottom: "WE CARE" },
-    Safety: { top: "THE ABC", middle: "Transportation", bottom: "SAFETY" },
-  };
-
-  const heading =
-    headingWords[currentTab?.tabLabel] || headingWords["Experience"];
-
   return (
     <section className="abc-component ht-section">
       {/* Tab Bar — Desktop */}
       <div className="tab-bar-desktop ht-tab-bar-desktop-wrap">
         <div ref={pillContainerRef} className="ht-tab-pill-group">
-          {sliderStyle && <div className="ht-tab-slider" style={sliderStyle} aria-hidden="true" />}
+          <span className="ht-tab-indicator" style={indicatorStyle} aria-hidden="true" />
           {tabs?.map((tab, index) => (
             <button
               key={index}
@@ -79,13 +75,12 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
                   style={{
                     filter:
                       activeTab === index
-                        ? "invert(72%) sepia(35%) saturate(400%) hue-rotate(18deg) brightness(115%)"
+                        ? "brightness(0) invert(70%) sepia(18%) saturate(666%) hue-rotate(22deg) brightness(91%) contrast(87%)"
                         : "none",
                   }}
                 />
               )}
               {tab.tabLabel}
-              {activeTab === index && <span className="ht-tab-indicator" />}
             </button>
           ))}
         </div>
@@ -97,13 +92,13 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
         <div className="ht-left-col">
           {/* Heading */}
           <div className="ht-heading-block">
-            <p className="ht-heading-main">{heading.top}</p>
-            <p className="ht-heading-sub">{heading.middle}</p>
-            <h1 key={activeTab} className="ht-heading-main ht-heading-enter">{heading.bottom}</h1>
+            <p className="ht-heading-main">{headingLine1}</p>
+            <p className="ht-heading-sub">{headingLine2}</p>
+            <h1 className="ht-heading-main">{headingLine3}</h1>
           </div>
 
           {/* Body Text */}
-          <p key={activeTab} className="ht-body-text ht-content-fade">{currentTab?.tabBodyText}</p>
+          <p className="ht-body-text">{introBodyText}</p>
 
           {/* Subcategory List */}
           <div className="ht-subcat-list">
@@ -117,7 +112,7 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
                   <img
                     src={sub.icon.node.sourceUrl}
                     alt={sub.icon.node.altText || ""}
-                    className={`ht-subcat-icon ${activeSubcategory === index ? "ht-subcat-icon--active" : "ht-subcat-icon--inactive"}`}
+                    className="ht-subcat-icon"
                   />
                 )}
                 <span className={`ht-subcat-label ${activeSubcategory === index ? "ht-subcat-label--active" : "ht-subcat-label--inactive"}`}>
@@ -146,11 +141,6 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
                         alt={sub.image.node.altText || ""}
                         className="ht-feature-image"
                       />
-                      {sub.image.node.caption && (
-                        <div className="ht-feature-caption">
-                          <p className="ht-feature-caption-text" dangerouslySetInnerHTML={{ __html: sub.image.node.caption }} />
-                        </div>
-                      )}
                     </div>
                   )}
                   <h2 className="ht-feature-title">{sub.title}</h2>
@@ -169,11 +159,11 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
       {/* Mobile Layout */}
       <div className="mobile-layout ht-mobile-wrap">
         {/* Heading */}
-        <div key={activeTab} className="ht-mobile-heading-block ht-animate-in">
-          <p className="ht-mobile-heading-main">{heading.top}</p>
-          <p className="ht-mobile-heading-sub">{heading.middle}</p>
-          <h1 className="ht-mobile-heading-main">{heading.bottom}</h1>
-          <p className="ht-mobile-body-text">{currentTab?.tabBodyText}</p>
+        <div className="ht-mobile-heading-block">
+          <p className="ht-mobile-heading-main">{headingLine1}</p>
+          <p className="ht-mobile-heading-sub">{headingLine2}</p>
+          <h1 className="ht-mobile-heading-main">{headingLine3}</h1>
+          <p className="ht-mobile-body-text">{introBodyText}</p>
         </div>
 
         {/* Tab Bar — Mobile */}
@@ -192,7 +182,7 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
                   style={{
                     filter:
                       activeTab === index
-                        ? "invert(72%) sepia(35%) saturate(400%) hue-rotate(18deg) brightness(115%)"
+                        ? "brightness(0) invert(70%) sepia(18%) saturate(666%) hue-rotate(22deg) brightness(91%) contrast(87%)"
                         : "none",
                   }}
                 />
@@ -237,7 +227,7 @@ export default function HomepageTabs({ tabs, getAQuoteUrl, bookOnlineUrl }) {
                         className="ht-accordion-image"
                       />
                     )}
-                    <h2 className="ht-accordion-title">{sub.title}</h2>
+                    <h2 className="ht-accordion-title font-euclid">{sub.title}</h2>
                     <p className="ht-accordion-body">{sub.bodyText}</p>
                     <div className="ht-accordion-cta-group">
                       <a href={getAQuoteUrl} className="ht-cta-gold-sm">Get a Quote</a>

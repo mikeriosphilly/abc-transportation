@@ -6,11 +6,14 @@ export const GET_HOMEPAGE_TABS = gql`
   query GetHomepageTabs {
     homepageOptions {
       homepageTabsComponent {
+        headingLine1
+        headingLine2
+        headingLine3
+        introBodyText
         getAQuoteUrl
         bookOnlineUrl
         tabs {
           tabLabel
-          tabBodyText
           tabIcon {
             node {
               sourceUrl
@@ -30,7 +33,6 @@ export const GET_HOMEPAGE_TABS = gql`
               node {
                 sourceUrl
                 altText
-                caption
               }
             }
           }
