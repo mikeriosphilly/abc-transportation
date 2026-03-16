@@ -66,6 +66,31 @@ An ACF Options page was used because the scope is limited to a single homepage c
 - Schema.org markup for rich search results
 - All tab and accordion content rendered in the DOM immediately (hidden from user but crawlable by search engines)
 
+## Component Architecture
+
+The homepage tab section is broken into focused, single-responsibility components. State lives in the `HomepageTabs` parent and is passed down via props drilling — the conventional React pattern for a component tree of this depth.
+
+| Component | Responsibility |
+| :--- | :--- |
+| `HomepageTabs` | State orchestrator — holds `activeTab`, `activeSubcategory`, `openAccordion` and passes handlers down |
+| `DesktopTabBar` | Desktop pill tab bar with sliding indicator; owns its own refs and resize logic |
+| `MobileTabBar` | Mobile pill tab buttons |
+| `SectionHeading` | Heading lines + intro body text; accepts a `mobile` prop to switch between desktop and mobile typography |
+| `SubcategoryList` | Desktop subcategory button list |
+| `FeaturePanel` | Desktop right column; all panels remain in the DOM for SEO, toggled via opacity/visibility |
+| `AccordionList` | Mobile accordion items with expand animation |
+| `CtaGroup` | Shared CTA button pair; accepts a `mobile` prop to switch between desktop and mobile button sizes |
+
+## Styling
+
+Styling uses Tailwind CSS v4 in the traditional utility-first manner — all styles are applied as inline utility classes directly in each component's JSX. `global.css` contains only:
+
+- Design tokens registered via `@theme` (colors and fonts as Tailwind utilities)
+- `@font-face` declarations for EuclidCircularB and LibreBaskerville
+- `html` base reset
+- Keyframe animation definitions
+- Mobile-first responsive layout toggle for desktop/mobile layout switching
+
 ## Notes
 
 - "Get a Quote" and "Book Online" CTA links are shared across all tabs and subcategories, editable from WordPress. The brief specified `href="#"` but these were made dynamic from the CMS for real-world usability.
